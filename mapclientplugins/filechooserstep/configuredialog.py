@@ -1,7 +1,7 @@
 import os
 import webbrowser
 
-from PySide2 import QtCore, QtWidgets
+from PySide6 import QtCore, QtWidgets
 
 from mapclientplugins.filechooserstep.ui_configuredialog import Ui_ConfigureDialog
 
