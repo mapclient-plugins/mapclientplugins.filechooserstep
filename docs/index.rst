@@ -1,14 +1,30 @@
-MAP Client Plugin - File Chooser
-================================
+File Chooser
+============
+
+Overview
+--------
 
 The **File Chooser** is MAP Client plugin for choosing a file from a location outside the workflow.
 
-.. _fig-mcp-file-chooser-un-configured-step:
 
-.. figure:: _images/un-configured-step.png
-   :alt: Un-configured step icon
+Workflow Connections
+--------------------
 
-   An un-configured *File Chooser* step icon.
+As shown in :numref:`fig-mcp-file-chooser-workflow-connections`, the **File Chooser** does not need any input.
+
+It produces 1 output which may be piped to other workflow steps:
+
+1. A location where the file is on the local disk. (Port: *http://physiomeproject.org/workflow/1.0/rdf-schema#file_location*) 
+
+.. _fig-mcp-file-chooser-workflow-connections:
+
+.. figure:: _images/workflow-connections.png
+   :alt: File Chooser workflow connections.
+   :align: center
+   :figwidth: 75%
+
+   **File Chooser** workflow connections.
+
 
 Configure
 ---------
@@ -24,12 +40,3 @@ The *File* input is used to hold the relative path from the workflow to the inpu
    :alt: Step configure dialog
 
    *File Chooser* step configuration dialog.
-
-Ports
------
-
-This plugin:
-
-* **provides**:
-
-  * *http://physiomeproject.org/workflow/1.0/rdf-schema#file_location*
