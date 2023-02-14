@@ -32,7 +32,8 @@ class ConfigureDialog(QtWidgets.QDialog):
         
         self._previousLocation = ''
 
-        self.setWhatsThis('<html>Please read the documentation available \n<a href="https://abi-mapping-tools.readthedocs.io/en/latest/mapclientplugins.filechooserstep/docs/index.html">here</a> for further details.</html>')
+        self.setWhatsThis('<html>Please read the documentation available \n<a href="https://abi-mapping-tools.readthedocs.io/en/latest/'
+                          'mapclientplugins.filechooserstep/docs/index.html">here</a> for further details.</html>')
 
         self._makeConnections()
 
@@ -74,16 +75,17 @@ class ConfigureDialog(QtWidgets.QDialog):
         Override the accept method so that we can confirm saving an
         invalid configuration.
         """
-        result = QtWidgets.QMessageBox.Yes
+        result = QtWidgets.QMessageBox.StandardButton.Yes
         if not self.validate():
             result = QtWidgets.QMessageBox.warning(self, 'Invalid Configuration',
                                                    'This configuration is invalid. '
                                                    ' Unpredictable behaviour may result if you choose \'Yes\','
                                                    ' are you sure you want to save this configuration?)',
-                                                   QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
-                                                   QtWidgets.QMessageBox.No)
+                                                   QtWidgets.QMessageBox.StandardButton(QtWidgets.QMessageBox.StandardButton.Yes |
+                                                                                        QtWidgets.QMessageBox.StandardButton.No),
+                                                   QtWidgets.QMessageBox.StandardButton.No)
 
-        if result == QtWidgets.QMessageBox.Yes:
+        if result == QtWidgets.QMessageBox.StandardButton.Yes:
             QtWidgets.QDialog.accept(self)
 
     def validate(self):
@@ -134,4 +136,3 @@ class ConfigureDialog(QtWidgets.QDialog):
         self._ui.lineEditFileLocation.setText(config['File'])
         if 'previous_location' in config:
             self._previousLocation = os.path.join(self._workflow_location, config['previous_location'])
-

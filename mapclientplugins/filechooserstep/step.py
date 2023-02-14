@@ -28,7 +28,7 @@ class FileChooserStep(WorkflowStepMountPoint):
                       'http://physiomeproject.org/workflow/1.0/rdf-schema#provides',
                       'http://physiomeproject.org/workflow/1.0/rdf-schema#file_location'))
         # Port data:
-        self._portData0 = None # http://physiomeproject.org/workflow/1.0/rdf-schema#file_location
+        self._portData0 = None  # http://physiomeproject.org/workflow/1.0/rdf-schema#file_location
         # Config:
         self._config = {'identifier': '', 'File': ''}
 
@@ -87,7 +87,6 @@ class FileChooserStep(WorkflowStepMountPoint):
         implement the opposite of 'deserialize'.
         """
         return json.dumps(self._config, default=lambda o: o.__dict__, sort_keys=True, indent=4)
-
 
     def deserialize(self, string):
         """
