@@ -1,5 +1,6 @@
 import os
 import webbrowser
+from pathlib import PureWindowsPath, PurePath
 
 from PySide6 import QtCore, QtWidgets
 
@@ -35,19 +36,19 @@ class ConfigureDialog(QtWidgets.QDialog):
         self.setWhatsThis('<html>Please read the documentation available \n<a href="https://abi-mapping-tools.readthedocs.io/en/latest/'
                           'mapclientplugins.filechooserstep/docs/index.html">here</a> for further details.</html>')
 
-        self._makeConnections()
+        self._make_connections()
 
     def event(self, e):
         if e.type() == QtCore.QEvent.Type.WhatsThisClicked:
             webbrowser.open(e.href())
         return super().event(e)
 
-    def _makeConnections(self):
+    def _make_connections(self):
         self._ui.lineEdit0.textChanged.connect(self.validate)
         self._ui.lineEditFileLocation.textChanged.connect(self.validate)
-        self._ui.pushButtonFileChooser.clicked.connect(self._fileChooserClicked)
+        self._ui.pushButtonFileChooser.clicked.connect(self._file_chooser_clicked)
         
-    def _fileChooserClicked(self):
+    def _file_chooser_clicked(self):
         # Second parameter returned is the filter chosen
         location, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Select File Location', self._previousLocation)
 
@@ -117,7 +118,7 @@ class ConfigureDialog(QtWidgets.QDialog):
         identifier over the whole of the workflow.
         """
         self._previousIdentifier = self._ui.lineEdit0.text()
-        config = {'identifier': self._ui.lineEdit0.text(), 'File': self._output_location()}
+        config = {'identifier': self._ui.lineEdit0.text(), 'File': PureWindowsPath(self._output_location()).as_posix()}
         if self._previousLocation:
             config['previous_location'] = os.path.relpath(self._previousLocation, self._workflow_location)
         else:
@@ -133,6 +134,6 @@ class ConfigureDialog(QtWidgets.QDialog):
         """
         self._previousIdentifier = config['identifier']
         self._ui.lineEdit0.setText(config['identifier'])
-        self._ui.lineEditFileLocation.setText(config['File'])
+        self._ui.lineEditFileLocation.setText(str(PurePath(config['File'])))
         if 'previous_location' in config:
             self._previousLocation = os.path.join(self._workflow_location, config['previous_location'])
