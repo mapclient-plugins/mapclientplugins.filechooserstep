@@ -5,10 +5,16 @@ MAP Client Plugin Step
 import os
 import json
 
-from PySide6 import QtWidgets, QtGui
+from PySide6 import QtGui
+from packaging.version import Version
+
 
 from mapclient.mountpoints.workflowstep import WorkflowStepMountPoint
+from mapclient.settings.version import __version__ as mapclient_version
 from mapclientplugins.filechooserstep.configuredialog import ConfigureDialog
+
+if Version("0.24.0") <= Version(mapclient_version):
+    from mapclient.core.utils import construct_configuration
 
 
 class FileChooserStep(WorkflowStepMountPoint):
@@ -68,6 +74,12 @@ class FileChooserStep(WorkflowStepMountPoint):
 
         self._configured = dlg.validate()
         self._configuredObserver()
+
+    def setConfiguration(self, configuration):
+        keys = ["File", "previous_location"]
+        identifier = self._config['identifier']
+        self._config = construct_configuration(configuration, keys, keys, self._location)
+        self._config['identifier'] = identifier
 
     def getIdentifier(self):
         """
