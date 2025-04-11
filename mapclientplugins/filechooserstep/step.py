@@ -37,6 +37,7 @@ class FileChooserStep(WorkflowStepMountPoint):
         self._portData0 = None  # http://physiomeproject.org/workflow/1.0/rdf-schema#file_location
         # Config:
         self._config = {'identifier': '', 'File': ''}
+        self._relative_path_config_keys = ['File']
 
     def execute(self):
         """
@@ -76,10 +77,17 @@ class FileChooserStep(WorkflowStepMountPoint):
         self._configuredObserver()
 
     def setConfiguration(self, configuration):
-        keys = ["File", "previous_location"]
+        keys = self._config.keys()
         identifier = self._config['identifier']
         self._config = construct_configuration(configuration, keys, keys, self._location)
         self._config['identifier'] = identifier
+
+    def relocateConfiguration(self, to_location):
+        for key in self._relative_path_config_keys:
+            value = self._config.get(key, '')
+            if value:
+                absolute_path = os.path.join(self._location, value)
+                self._config[key] = os.path.relpath(absolute_path, to_location)
 
     def getIdentifier(self):
         """
