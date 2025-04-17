@@ -1,10 +1,11 @@
 import os
 import webbrowser
-from pathlib import PureWindowsPath, PurePath
 
 from PySide6 import QtCore, QtWidgets
 
 from mapclientplugins.filechooserstep.ui_configuredialog import Ui_ConfigureDialog
+
+from mapclient.core.utils import to_exchangeable_path, to_system_path
 
 INVALID_STYLE_SHEET = 'background-color: rgba(239, 0, 0, 50)'
 DEFAULT_STYLE_SHEET = ''
@@ -30,7 +31,7 @@ class ConfigureDialog(QtWidgets.QDialog):
         # Set a place holder for a callable that will get set from the step.
         # We will use this method to decide whether the identifier is unique.
         self.identifierOccursCount = None
-        
+
         self._previousLocation = ''
 
         self.setWhatsThis('<html>Please read the documentation available \n<a href="https://abi-mapping-tools.readthedocs.io/en/latest/'
@@ -47,7 +48,7 @@ class ConfigureDialog(QtWidgets.QDialog):
         self._ui.lineEdit0.textChanged.connect(self.validate)
         self._ui.lineEditFileLocation.textChanged.connect(self.validate)
         self._ui.pushButtonFileChooser.clicked.connect(self._file_chooser_clicked)
-        
+
     def _file_chooser_clicked(self):
         # Second parameter returned is the filter chosen
         location, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Select File Location', self._previousLocation)
@@ -118,11 +119,10 @@ class ConfigureDialog(QtWidgets.QDialog):
         identifier over the whole of the workflow.
         """
         self._previousIdentifier = self._ui.lineEdit0.text()
-        config = {'identifier': self._ui.lineEdit0.text(), 'File': PureWindowsPath(self._output_location()).as_posix()}
-        if self._previousLocation:
-            config['previous_location'] = os.path.relpath(self._previousLocation, self._workflow_location)
-        else:
-            config['previous_location'] = ''
+        config = {
+            'identifier': self._ui.lineEdit0.text(), 'File': to_exchangeable_path(self._output_location()),
+            'previous_location': to_exchangeable_path(os.path.relpath(self._previousLocation, self._workflow_location)) if self._previousLocation else '',
+        }
 
         return config
 
@@ -134,6 +134,6 @@ class ConfigureDialog(QtWidgets.QDialog):
         """
         self._previousIdentifier = config['identifier']
         self._ui.lineEdit0.setText(config['identifier'])
-        self._ui.lineEditFileLocation.setText(str(PurePath(config['File'])))
+        self._ui.lineEditFileLocation.setText(to_system_path(config['File']))
         if 'previous_location' in config:
-            self._previousLocation = os.path.join(self._workflow_location, config['previous_location'])
+            self._previousLocation = to_system_path(os.path.join(self._workflow_location, config['previous_location']))
